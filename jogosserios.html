@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jogos Sérios - LGL</title>
+  <link rel="stylesheet" href="jogosserios.css">
+  <link rel="icon" type="image/x-icon" href="images/logolgl2.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&family=Asimovian&display=swap"
+    rel="stylesheet">
+</head>
+
+<body>
+  <header>
+    <label for="menu" class="icon">&#9776;</label>
+    <input type="checkbox" id="menu">
+
+    <p class="titulo">LGL</p>
+    <div class="items">
+      <a href="https://portal.sc.senac.br/" class="item1">Senac</a>
+      <a href="suporte.html" class="item">Suporte</a>
+      <a href="sobreprojeto.html" class="item">Sobre o Projeto</a>
+      <a href="index.html#categorias" class="item">Categorias</a>
+      <a href="index.html" class="item">Home</a>
+    </div>
+  </header>
+
+  <section class="container1">
+    <div class="hero">
+      <div class="titulojogo">
+        <div class="linha"></div>
+        <h1>Jogos Sérios</h1>
+      </div>
+    </div>
+  </section>
+
+  <div class="carousel-container">
+    <div class="carousel-track" id="track">
+      <div class="game" id="geofs"><img src="Pesquisas/serios/geo/capa.jpg" alt="Jogo 1">
+        <div class="info">GeoFS</div>
+      </div>
+      <div class="game" id="code"><img src="Pesquisas/serios/codecombat/capa.png" alt="Jogo 2">
+        <div class="info">CodeCombat</div>
+      </div>
+      <div class="game" id="stardew"><img src="Pesquisas/serios/stardew/capa.png" alt="Jogo 3">
+        <div class="info">Stardew Valley</div>
+      </div>
+      <div class="game" id="polygons"><img src="Pesquisas/serios/polygons/capa.png" alt="Jogo 4">
+        <div class="info" style="background-color: #478c2c;">Parable of the Polygons</div>
+      </div>
+      <div class="game" id="spent"><img src="Pesquisas/serios/spent/capa.png" alt="Jogo 5">
+        <div class="info">Spent</div>
+      </div>
+      <div class="game" id="sudoku"><img src="Pesquisas/serios/sudoku/capa.avif" alt="Jogo 6">
+        <div class="info">Sudoku</div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="arrow left" id="prev" style="font-size: 25px;"><i class="fa-solid fa-arrow-left"></i></button>
+      <button class="arrow right" id="next" style="font-size: 25px;"><i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+  </div>
+
+  <footer>
+    <div class="containerfooter">
+      <p><span>&copy;</span> 2025 Projeto Lógica Legal. Todos os direitos reservados.</p>
+      <div class="redesfooter">
+        <a href="https://www.instagram.com/" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="https://www.facebook.com/" target="_blank" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+        <a href="https://wa.me/" target="_blank" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Script removido para evitar redeclaração de variáveis duplicadas -->
+
+  <script>
+    const container = document.querySelector('.carousel-container');
+    const track = document.getElementById('track');
+    const prev = document.getElementById('prev');
+    const next = document.getElementById('next');
+    const games = Array.from(document.querySelectorAll('.game'));
+
+    let position = 0; // deslocamento em px
+
+    function getGap() {
+      const style = window.getComputedStyle(track);
+      return parseFloat(style.gap) || 0;
+    }
+
+    function getCardWidth() {
+      if (!games.length) return 0;
+      return games[0].getBoundingClientRect().width + getGap();
+    }
+
+    function getMaxScroll() {
+      return track.scrollWidth - container.clientWidth;
+    }
+
+    function updateControls(position, maxScroll) {
+      if (position <= 0) {
+        // início → só a seta da direita
+        prev.style.display = "none";
+        next.style.display = "block";
+        document.querySelector('.controls').style.justifyContent = "flex-end";
+      } else if (position >= maxScroll - 2) {
+        // fim → só a seta da esquerda
+        prev.style.display = "block";
+        next.style.display = "none";
+        document.querySelector('.controls').style.justifyContent = "flex-start";
+      } else {
+        // meio → as duas setas
+        prev.style.display = "block";
+        next.style.display = "block";
+        document.querySelector('.controls').style.justifyContent = "space-between";
+      }
+    }
+
+    function moveCarousel(step) {
+      const cardWidth = getCardWidth();
+      if (!cardWidth) return;
+      position += step * cardWidth;
+      const maxScroll = getMaxScroll();
+
+      if (position < 0) position = 0;
+      if (position > maxScroll) position = maxScroll;
+
+      track.style.transform = `translateX(-${position}px)`;
+
+      updateControls(position, maxScroll);
+    }
+
+    function updateCarousel() {
+      const maxScroll = getMaxScroll();
+      if (position > maxScroll) position = maxScroll;
+      track.style.transform = `translateX(-${position}px)`;
+
+      updateControls(position, maxScroll);
+    }
+
+    prev.addEventListener('click', () => moveCarousel(-1));
+    next.addEventListener('click', () => moveCarousel(1));
+
+    window.addEventListener('resize', () => {
+      requestAnimationFrame(updateCarousel);
+    });
+
+    window.addEventListener('load', () => {
+      updateCarousel();
+      setTimeout(updateCarousel, 150);
+    });
+
+    // redirecionamentos
+    document.querySelector('#geofs').onclick = () => window.location.href = 'geofs.html';
+    document.querySelector('#code').onclick = () => window.location.href = 'code.html';
+    document.querySelector('#stardew').onclick = () => window.location.href = 'stardew.html';
+    document.querySelector('#polygons').onclick = () => window.location.href = 'polygons.html';
+    document.querySelector('#spent').onclick = () => window.location.href = 'spent.html';
+    document.querySelector('#sudoku').onclick = () => window.location.href = 'sudoku.html';
+  </script>
+
+</body>
+
+</html>
